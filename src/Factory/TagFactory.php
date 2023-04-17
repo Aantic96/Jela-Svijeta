@@ -2,32 +2,32 @@
 
 namespace App\Factory;
 
-use App\Entity\Tags;
+use App\Entity\Tag;
 use App\Repository\TagsRepository;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
 
 /**
- * @extends ModelFactory<Tags>
+ * @extends ModelFactory<Tag>
  *
- * @method        Tags|Proxy create(array|callable $attributes = [])
- * @method static Tags|Proxy createOne(array $attributes = [])
- * @method static Tags|Proxy find(object|array|mixed $criteria)
- * @method static Tags|Proxy findOrCreate(array $attributes)
- * @method static Tags|Proxy first(string $sortedField = 'id')
- * @method static Tags|Proxy last(string $sortedField = 'id')
- * @method static Tags|Proxy random(array $attributes = [])
- * @method static Tags|Proxy randomOrCreate(array $attributes = [])
+ * @method        Tag|Proxy create(array|callable $attributes = [])
+ * @method static Tag|Proxy createOne(array $attributes = [])
+ * @method static Tag|Proxy find(object|array|mixed $criteria)
+ * @method static Tag|Proxy findOrCreate(array $attributes)
+ * @method static Tag|Proxy first(string $sortedField = 'id')
+ * @method static Tag|Proxy last(string $sortedField = 'id')
+ * @method static Tag|Proxy random(array $attributes = [])
+ * @method static Tag|Proxy randomOrCreate(array $attributes = [])
  * @method static TagsRepository|RepositoryProxy repository()
- * @method static Tags[]|Proxy[] all()
- * @method static Tags[]|Proxy[] createMany(int $number, array|callable $attributes = [])
- * @method static Tags[]|Proxy[] createSequence(iterable|callable $sequence)
- * @method static Tags[]|Proxy[] findBy(array $attributes)
- * @method static Tags[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
- * @method static Tags[]|Proxy[] randomSet(int $number, array $attributes = [])
+ * @method static Tag[]|Proxy[] all()
+ * @method static Tag[]|Proxy[] createMany(int $number, array|callable $attributes = [])
+ * @method static Tag[]|Proxy[] createSequence(iterable|callable $sequence)
+ * @method static Tag[]|Proxy[] findBy(array $attributes)
+ * @method static Tag[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
+ * @method static Tag[]|Proxy[] randomSet(int $number, array $attributes = [])
  */
-final class TagsFactory extends ModelFactory
+final class TagFactory extends ModelFactory
 {
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
@@ -59,12 +59,12 @@ final class TagsFactory extends ModelFactory
     protected function initialize(): self
     {
         return $this
-            // ->afterInstantiate(function(Tags $tags): void {})
+            // ->afterInstantiate(function(Tag $tags): void {})
         ;
     }
 
     protected static function getClass(): string
     {
-        return Tags::class;
+        return Tag::class;
     }
 }

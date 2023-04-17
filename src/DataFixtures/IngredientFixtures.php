@@ -2,14 +2,14 @@
 
 namespace App\DataFixtures;
 
-use App\Factory\TagsFactory;
+use App\Factory\IngredientFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
-class TagsFixtures extends Fixture
+class IngredientFixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {
-        TagsFactory::createMany(4);
+       IngredientFactory::createMany(15);
     }
 }

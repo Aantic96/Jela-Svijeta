@@ -2,11 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\TagsRepository;
+use App\Repository\IngredientsRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: TagsRepository::class)]
-class Tags
+#[ORM\Entity(repositoryClass: IngredientsRepository::class)]
+class Ingredient
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -22,9 +24,13 @@ class Tags
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt;
 
+    #[ORM\ManyToMany(targetEntity: Food::class, mappedBy: 'ingredients')]
+    private Collection $food;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
+        $this->food = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -64,6 +70,33 @@ class Tags
     public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Food>
+     */
+    public function getFood(): Collection
+    {
+        return $this->food;
+    }
+
+    public function addFood(Food $food): self
+    {
+        if (!$this->food->contains($food)) {
+            $this->food->add($food);
+            $food->addIngredient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFood(Food $food): self
+    {
+        if ($this->food->removeElement($food)) {
+            $food->removeIngredient($this);
+        }
 
         return $this;
     }
