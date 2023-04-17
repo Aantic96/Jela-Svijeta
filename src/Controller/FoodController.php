@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class FoodController extends AbstractController
 {
-    #[Route('/food')]
+    #[Route('/food', name:'food_index', methods: ['GET'])]
     public function indexAction(EntityManagerInterface $entityManager): JsonResponse
     {
         $foodRepository = $entityManager->getRepository(Food::class);

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CategoryRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
@@ -22,9 +24,13 @@ class Category
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt;
 
+    #[ORM\OneToMany(mappedBy: 'category', targetEntity: Food::class)]
+    private Collection $food;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
+        $this->food = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -64,6 +70,36 @@ class Category
     public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Food>
+     */
+    public function getFood(): Collection
+    {
+        return $this->food;
+    }
+
+    public function addFood(Food $food): self
+    {
+        if (!$this->food->contains($food)) {
+            $this->food->add($food);
+            $food->setCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFood(Food $food): self
+    {
+        if ($this->food->removeElement($food)) {
+            // set the owning side to null (unless already changed)
+            if ($food->getCategory() === $this) {
+                $food->setCategory(null);
+            }
+        }
 
         return $this;
     }

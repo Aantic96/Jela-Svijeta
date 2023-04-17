@@ -16,11 +16,11 @@ class Food
     #[ORM\Column(length: 100)]
     private ?string $name = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $category_id = null;
-
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt;
+
+    #[ORM\ManyToOne(inversedBy: 'food')]
+    private ?Category $category = null;
 
     public function __construct()
     {
@@ -44,18 +44,6 @@ class Food
         return $this;
     }
 
-    public function getCategoryId(): ?int
-    {
-        return $this->category_id;
-    }
-
-    public function setCategoryId(?int $category_id): self
-    {
-        $this->category_id = $category_id;
-
-        return $this;
-    }
-
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
@@ -64,6 +52,18 @@ class Food
     public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): self
+    {
+        $this->category = $category;
 
         return $this;
     }
