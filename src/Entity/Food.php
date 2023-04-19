@@ -6,6 +6,7 @@ use App\Repository\FoodRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: FoodRepository::class)]
 class Food
@@ -13,21 +14,27 @@ class Food
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['food', 'ingredient', 'tag', 'category'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups('food')]
     private ?string $name = null;
 
     #[ORM\Column]
+    #[Groups('food')]
     private ?\DateTimeImmutable $createdAt;
 
     #[ORM\ManyToOne(inversedBy: 'food')]
+    #[Groups('category')]
     private ?Category $category = null;
 
     #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'food')]
+    #[Groups('tag')]
     private Collection $tags;
 
     #[ORM\ManyToMany(targetEntity: Ingredient::class, inversedBy: 'food')]
+    #[Groups('ingredient')]
     private Collection $ingredients;
 
     public function __construct()
@@ -125,4 +132,5 @@ class Food
 
         return $this;
     }
+
 }

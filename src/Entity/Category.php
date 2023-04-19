@@ -6,6 +6,7 @@ use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 class Category
@@ -13,15 +14,19 @@ class Category
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('category')]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups('category')]
     private ?string $title = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups('category')]
     private ?string $slug = null;
 
     #[ORM\Column]
+    #[Groups('category')]
     private ?\DateTimeImmutable $createdAt;
 
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Food::class)]
