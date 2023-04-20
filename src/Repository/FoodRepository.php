@@ -43,9 +43,8 @@ class FoodRepository extends ServiceEntityRepository
     public function getAllFilteredByQueryParameters(Request $request)
     {
         $query = $this->createQueryBuilder('f');
-        $category = $request->query->get('category');
 
-        if ($category) {
+        if ($category = $request->query->get('category')) {
             if ($category === "NULL") {
                 $query->andWhere("f.category IS NULL");
             } else if ($category === "!NULL") {
@@ -59,6 +58,11 @@ class FoodRepository extends ServiceEntityRepository
             $tags = explode(",", $tags);
             $query->innerJoin('f.tags', 'food_tags')
                 ->andWhere("food_tags.id IN (:tags)")->setParameter('tags', $tags);
+        }
+
+        if ($diffTime = $request->query->get('diff_time')) {
+            $date = date('Y-m-d H:i:s', $diffTime);
+            $query->andWhere('f.createdAt >= :diff_time')->setParameter('diff_time', $date);
         }
 
         return $query->getQuery()->getResult();

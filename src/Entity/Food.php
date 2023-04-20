@@ -132,5 +132,4 @@ class Food
 
         return $this;
     }
-
 }
