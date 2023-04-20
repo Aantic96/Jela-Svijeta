@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Food;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Knp\Component\Pager\Paginator;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -57,7 +59,13 @@ class FoodRepository extends ServiceEntityRepository
         if ($tags = $request->query->get('tags')) {
             $tags = explode(",", $tags);
             $query->innerJoin('f.tags', 'food_tags')
-                ->andWhere("food_tags.id IN (:tags)")->setParameter('tags', $tags);
+                ->andWhere("food_tags.id IN (:tags)")
+                ->setParameter('tags', $tags);
+
+            foreach ($tags as $tag) {
+                $query->andWhere(":tagId{$tag} MEMBER OF f.tags")
+                    ->setParameter("tagId{$tag}", $tag);
+            }
         }
 
         if ($diffTime = $request->query->get('diff_time')) {
@@ -65,7 +73,7 @@ class FoodRepository extends ServiceEntityRepository
             $query->andWhere('f.createdAt >= :diff_time')->setParameter('diff_time', $date);
         }
 
-        return $query->getQuery()->getResult();
+        return $query->getQuery();
     }
 
 //    /**
