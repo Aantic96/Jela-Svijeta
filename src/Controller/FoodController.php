@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Context\Normalizer\ObjectNormalizerContextBuilder;
 use Symfony\Component\Serializer\SerializerInterface;
-use Knp\Component\Pager\Paginator;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class FoodController extends BaseController
 {
@@ -18,17 +18,17 @@ class FoodController extends BaseController
     public function indexAction(Request                $request,
                                 EntityManagerInterface $entityManager,
                                 SerializerInterface    $serializer,
-                                PaginatorInterface     $paginator): JsonResponse
+                                PaginatorInterface     $paginator,
+                                TranslatorInterface    $translator): JsonResponse
     {
+        //TODO: Add validators
+
         $food = $entityManager->getRepository(Food::class)
             ->getAllFilteredByQueryParameters($request);
 
-        $perPage = $request->query->get('per_page') ?: 10;
-        $page = $request->query->get('page') ?: 1;
+        $lang = $request->query->get('lang');
 
-        $pagination = $paginator->paginate(
-            $food, $request->query->getInt('page', $page), $perPage
-        );
+        $translator->setLocale($lang);
 
         $groups = explode(",", $request->query->get('with'));
 
@@ -36,18 +36,21 @@ class FoodController extends BaseController
             ->withGroups(array_merge(['food'], $groups))
             ->toArray();
 
+        $pagination = $this->getPaginator($request, $paginator, $food);
+
         $data = $serializer->serialize($pagination, 'json', $context);
+        $data = json_decode($data);
+        $data = $this->translateData($data, $translator);
+
+        $meta = $this->getMeta($pagination);
 
         $json = [
-            'meta' => [
-                "currentPage" => $pagination->getCurrentPageNumber(),
-                "totalItems" => $pagination->getTotalItemCount(),
-                "itemsPerPage" => $pagination->getItemNumberPerPage(),
-                "totalPages" => ceil($pagination->getTotalItemCount() / $pagination->getItemNumberPerPage())
-            ],
-            'data' => json_decode($data)
+            'meta' => $meta,
+            'data' => $data
         ];
 
-        return new JsonResponse(data: $json);
+       return new JsonResponse($json);
     }
+
+
 }
