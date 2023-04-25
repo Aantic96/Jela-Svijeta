@@ -68,10 +68,15 @@ class FoodRepository extends ServiceEntityRepository
             }
         }
 
-        //TODO: Refactor diff_time arg once I add created_at and updated_at
         if ($diffTime = $request->query->get('diff_time')) {
             $date = date('Y-m-d H:i:s', $diffTime);
-            $query->andWhere('f.createdAt >= :diff_time')->setParameter('diff_time', $date);
+
+            $query->andWhere('f.createdAt <= :diff_time')
+                ->orWhere('f.updatedAt <= :diff_time')
+                ->orWhere('f.deletedAt <= :diff_time')
+                ->setParameter('diff_time', $date);
+        } else {
+            $query->andWhere('f.deletedAt IS NULL');
         }
 
         return $query->getQuery();

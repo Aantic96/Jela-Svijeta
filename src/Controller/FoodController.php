@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Food;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
-use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -49,8 +48,14 @@ class FoodController extends BaseController
 
         $pagination = $this->getPaginator($request, $paginator, $food);
 
+        foreach ($pagination->getItems() as $object)
+        {
+            $object->setStatus($request->query->get('diff_time'));
+        }
+
         $data = $serializer->serialize($pagination, 'json', $context);
         $data = json_decode($data);
+
         $data = $this->translateData($data, $translator);
 
         $meta = $this->getMeta($pagination);
@@ -96,10 +101,8 @@ class FoodController extends BaseController
             ]),
 
             'category' => new Assert\Optional([
-                new Assert\Callback(function ($value, ExecutionContextInterface $context)
-                {
-                    if(!is_numeric($value) && $value != 'NULL' && $value != '!NULL')
-                    {
+                new Assert\Callback(function ($value, ExecutionContextInterface $context) {
+                    if (!is_numeric($value) && $value != 'NULL' && $value != '!NULL') {
                         $context->buildViolation('Category must be an int, NULL or !NULL')
                             ->addViolation();
                     }
@@ -127,14 +130,15 @@ class FoodController extends BaseController
                 if (str_contains($value, ',')) {
                     $params[$key] = array_map('intval', explode(',', $value));
                 } else {
-                    $params[$key] = [(integer)$value];
+                    if (ctype_digit($value)) {
+                        $params[$key] = [(integer)$value];
+                    }
                 }
             }
-            if($key == 'category'){
-                if ($value !== "NULL" && $value !== "!NULL")
-                {
-                    if(preg_match("/^\d+$/", $value)){
-                        $params[$key] = (integer) $value;
+            if ($key == 'category') {
+                if ($value !== "NULL" && $value !== "!NULL") {
+                    if (preg_match("/^\d+$/", $value)) {
+                        $params[$key] = (integer)$value;
                     }
                 }
             }

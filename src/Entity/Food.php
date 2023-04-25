@@ -6,6 +6,7 @@ use App\Repository\FoodRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: FoodRepository::class)]
@@ -20,6 +21,9 @@ class Food
     #[ORM\Column(length: 100)]
     #[Groups('food')]
     private ?string $name = null;
+
+    #[Groups('food')]
+    private string $status;
 
     #[ORM\Column]
     #[Groups('food')]
@@ -37,11 +41,42 @@ class Food
     #[Groups('ingredient')]
     private Collection $ingredients;
 
+    #[ORM\Column]
+    #[Groups('food')]
+    private ?\DateTimeImmutable $updatedAt = null;
+
+    #[ORM\Column(nullable: true)]
+    #[Groups('food')]
+    private ?\DateTimeImmutable $deletedAt = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable();
         $this->tags = new ArrayCollection();
         $this->ingredients = new ArrayCollection();
+    }
+
+    public function setStatus($diffTime)
+    {
+        $status = "created";
+
+       if ($diffTime && $this->updatedAt && $this->updatedAt->getTimestamp() < $diffTime)
+        {
+            $status = "modified";
+        }
+        if ($diffTime && $this->deletedAt && $this->deletedAt->getTimestamp() < $diffTime)
+        {
+            $status = "deleted";
+        }
+
+
+        $this->status = $status;
+    }
+
+    public function getStatus(): string
+    {
+        return $this->status;
     }
 
     public function getId(): ?int
@@ -129,6 +164,30 @@ class Food
     public function removeIngredient(Ingredient $ingredient): self
     {
         $this->ingredients->removeElement($ingredient);
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getDeletedAt(): ?\DateTimeImmutable
+    {
+        return $this->deletedAt;
+    }
+
+    public function setDeletedAt(?\DateTimeImmutable $deletedAt): self
+    {
+        $this->deletedAt = $deletedAt;
 
         return $this;
     }

@@ -46,10 +46,14 @@ final class FoodFactory extends ModelFactory
      */
     protected function getDefaults(): array
     {
-        return [
+        $defaults = [
             'createdAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
-            'name' => self::faker()->word,
+            'name' => self::faker()->word
         ];
+
+        $defaults['updated_at'] = $defaults['createdAt'];
+
+        return $defaults;
     }
 
     /**
@@ -57,9 +61,8 @@ final class FoodFactory extends ModelFactory
      */
     protected function initialize(): self
     {
-        return $this
-            // ->afterInstantiate(function(Food $food): void {})
-        ;
+        return $this// ->afterInstantiate(function(Food $food): void {})
+            ;
     }
 
     protected static function getClass(): string
