@@ -5,9 +5,11 @@ namespace App\Controller;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use function Webmozart\Assert\Tests\StaticAnalysis\integer;
 
 class BaseController extends AbstractController
 {
+
     protected function getPaginator(Request $request, PaginatorInterface $paginator, $entity)
     {
         $perPage = $request->query->get('per_page') ?: 10;
