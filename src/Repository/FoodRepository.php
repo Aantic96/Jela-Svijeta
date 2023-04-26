@@ -4,9 +4,8 @@ namespace App\Repository;
 
 use App\Entity\Food;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
-use Knp\Component\Pager\Paginator;
-use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -42,7 +41,7 @@ class FoodRepository extends ServiceEntityRepository
         }
     }
 
-    public function getAllFilteredByQueryParameters(Request $request)
+    public function getAllFilteredByQueryParameters(Request $request): Query
     {
         $query = $this->createQueryBuilder('f');
 

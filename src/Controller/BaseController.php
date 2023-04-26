@@ -4,18 +4,15 @@ namespace App\Controller;
 
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use function Webmozart\Assert\Tests\StaticAnalysis\integer;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class BaseController extends AbstractController
 {
+    protected PaginatorInterface $paginator;
 
-    protected function getPaginator(Request $request, PaginatorInterface $paginator, $entity)
+    protected function setPaginator(PaginatorInterface $paginator): void
     {
-        $perPage = $request->query->get('per_page') ?: 10;
-        $page = $request->query->get('page') ?: 1;
-
-        return $paginator->paginate($entity, $request->query->getInt('page', $page), $perPage);
+        $this->paginator = $paginator;
     }
 
     protected function getMeta($pagination): array
@@ -29,7 +26,7 @@ class BaseController extends AbstractController
     }
 
     //Extra, just wanted to try out key translation
-    protected function translateMeta(array $meta, $translator): array
+    protected function translateMeta(array $meta, TranslatorInterface $translator): array
     {
         $translatedMeta = [];
         foreach ($meta as $key => $value) {
@@ -38,7 +35,7 @@ class BaseController extends AbstractController
         return $translatedMeta;
     }
 
-    protected function translateData($data, $translator)
+    protected function translateData($data, TranslatorInterface $translator): mixed
     {
         foreach ($data as $key => $value) {
             if (is_string($value)) {

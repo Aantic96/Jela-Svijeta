@@ -49,6 +49,10 @@ class Food
     #[Groups('food')]
     private ?\DateTimeImmutable $deletedAt = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups('food')]
+    private ?string $description = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -57,19 +61,16 @@ class Food
         $this->ingredients = new ArrayCollection();
     }
 
-    public function setStatus($diffTime)
+    public function setStatus(null|string $diffTime): void
     {
-        $status = "created";
+        $status = 'created';
 
-       if ($diffTime && $this->updatedAt && $this->updatedAt->getTimestamp() < $diffTime)
-        {
-            $status = "modified";
+        if ($diffTime && $this->updatedAt && $this->updatedAt->getTimestamp() < $diffTime) {
+            $status = 'modified';
         }
-        if ($diffTime && $this->deletedAt && $this->deletedAt->getTimestamp() < $diffTime)
-        {
-            $status = "deleted";
+        if ($diffTime && $this->deletedAt && $this->deletedAt->getTimestamp() < $diffTime) {
+            $status = 'deleted';
         }
-
 
         $this->status = $status;
     }
@@ -188,6 +189,18 @@ class Food
     public function setDeletedAt(?\DateTimeImmutable $deletedAt): self
     {
         $this->deletedAt = $deletedAt;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }

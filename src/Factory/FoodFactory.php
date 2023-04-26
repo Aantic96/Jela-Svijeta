@@ -48,7 +48,8 @@ final class FoodFactory extends ModelFactory
     {
         $defaults = [
             'createdAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
-            'name' => self::faker()->word
+            'name' => self::faker()->word,
+            'description' => self::faker()->text()
         ];
 
         $defaults['updated_at'] = $defaults['createdAt'];
