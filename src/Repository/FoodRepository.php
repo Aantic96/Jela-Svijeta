@@ -46,24 +46,24 @@ class FoodRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('f');
 
         if ($category = $request->query->get('category')) {
-            if ($category === "NULL") {
-                $query->andWhere("f.category IS NULL");
-            } else if ($category === "!NULL") {
-                $query->andWhere("f.category IS NOT NULL");
+            if ($category === 'NULL') {
+                $query->andWhere('f.category IS NULL');
+            } else if ($category === '!NULL') {
+                $query->andWhere('f.category IS NOT NULL');
             } else {
-                $query->andWhere("f.category = :category")->setParameter('category', $category);
+                $query->andWhere('f.category = :category')->setParameter('category', $category);
             }
         }
 
         if ($tags = $request->query->get('tags')) {
-            $tags = explode(",", $tags);
+            $tags = explode(',', $tags);
             $query->innerJoin('f.tags', 'food_tags')
-                ->andWhere("food_tags.id IN (:tags)")
+                ->andWhere('food_tags.id IN (:tags)')
                 ->setParameter('tags', $tags);
 
             foreach ($tags as $tag) {
-                $query->andWhere(":tagId{$tag} MEMBER OF f.tags")
-                    ->setParameter("tagId{$tag}", $tag);
+                $query->andWhere(':tagId{$tag} MEMBER OF f.tags')
+                    ->setParameter('tagId{$tag}', $tag);
             }
         }
 

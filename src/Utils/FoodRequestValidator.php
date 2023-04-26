@@ -88,7 +88,7 @@ class FoodRequestValidator
                 }
             }
             if ($key == 'category') {
-                if ($value !== "NULL" && $value !== "!NULL") {
+                if ($value !== 'NULL' && $value !== '!NULL') {
                     if (preg_match("/^\d+$/", $value)) {
                         $params[$key] = (integer)$value;
                     }

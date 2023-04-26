@@ -17,10 +17,10 @@ class BaseController extends AbstractController
     protected function getMeta($pagination): array
     {
         return [
-            "currentPage" => $pagination->getCurrentPageNumber(),
-            "totalItems" => $pagination->getTotalItemCount(),
-            "itemsPerPage" => $pagination->getItemNumberPerPage(),
-            "totalPages" => ceil($pagination->getTotalItemCount() / $pagination->getItemNumberPerPage())
+            'currentPage' => $pagination->getCurrentPageNumber(),
+            'totalItems' => $pagination->getTotalItemCount(),
+            'itemsPerPage' => $pagination->getItemNumberPerPage(),
+            'totalPages' => ceil($pagination->getTotalItemCount() / $pagination->getItemNumberPerPage())
         ];
     }
 

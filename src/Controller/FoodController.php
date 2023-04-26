@@ -31,7 +31,7 @@ class FoodController extends BaseController
         $food = $entityManager->getRepository(Food::class)
             ->getAllFilteredByQueryParameters($request);
 
-        $groups = explode(",", $request->query->get('with'));
+        $groups = explode(',', $request->query->get('with'));
 
         $context = (new ObjectNormalizerContextBuilder())
             ->withGroups(array_merge(['food'], $groups))
@@ -48,9 +48,9 @@ class FoodController extends BaseController
 
         $data = $serializer->serialize($pagination, 'json', $context);
         $data = json_decode($data);
-        
+
         $this->translator->setLocale($request->query->get('lang'));
-        $data = $this->translateData($data, $this->translator);
+        $data = $this->translateData($data);
 
         $meta = $this->getMeta($pagination);
 
