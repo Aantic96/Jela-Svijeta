@@ -2,17 +2,16 @@
 
 namespace App\Controller;
 
-use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class BaseController extends AbstractController
 {
-    protected PaginatorInterface $paginator;
+    protected $translator;
 
-    protected function setPaginator(PaginatorInterface $paginator): void
+    public function setTranslator(TranslatorInterface $translator): void
     {
-        $this->paginator = $paginator;
+        $this->translator = $translator;
     }
 
     protected function getMeta($pagination): array
@@ -26,7 +25,7 @@ class BaseController extends AbstractController
     }
 
     //Extra, just wanted to try out key translation
-    protected function translateMeta(array $meta, TranslatorInterface $translator): array
+    protected function translateMeta(array $meta, $translator): array
     {
         $translatedMeta = [];
         foreach ($meta as $key => $value) {
@@ -35,15 +34,16 @@ class BaseController extends AbstractController
         return $translatedMeta;
     }
 
-    protected function translateData($data, TranslatorInterface $translator): mixed
+    protected function translateData($data): mixed
     {
         foreach ($data as $key => $value) {
             if (is_string($value)) {
-                $data->$key = $translator->trans($value);
+                $data->$key = $this->translator->trans($value);
             } elseif (is_object($value) || is_array(($value))) {
-                $this->translateData($value, $translator);
+                $this->translateData($value);
             }
         }
         return $data;
     }
+
 }

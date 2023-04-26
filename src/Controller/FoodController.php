@@ -10,7 +10,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Context\Normalizer\ObjectNormalizerContextBuilder;
 use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use App\Utils\FoodRequestValidator;
 
@@ -22,7 +21,6 @@ class FoodController extends BaseController
                                 EntityManagerInterface $entityManager,
                                 SerializerInterface    $serializer,
                                 PaginatorInterface     $paginator,
-                                TranslatorInterface    $translator,
                                 ValidatorInterface     $validator): JsonResponse
     {
         //Request validation
@@ -50,9 +48,9 @@ class FoodController extends BaseController
 
         $data = $serializer->serialize($pagination, 'json', $context);
         $data = json_decode($data);
-
-        $translator->setLocale($request->query->get('lang'));
-        $data = $this->translateData($data, $translator);
+        
+        $this->translator->setLocale($request->query->get('lang'));
+        $data = $this->translateData($data, $this->translator);
 
         $meta = $this->getMeta($pagination);
 
