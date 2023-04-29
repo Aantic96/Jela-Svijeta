@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Food;
+use App\Form\FoodFormType;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,6 +14,7 @@ use Symfony\Component\Serializer\Context\Normalizer\ObjectNormalizerContextBuild
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use App\Utils\FoodRequestValidator;
+use Twig\Environment;
 
 
 class FoodController extends BaseController
@@ -60,5 +63,25 @@ class FoodController extends BaseController
         ];
 
         return new JsonResponse($json);
+    }
+
+    #[Route('/post', name: "post_form")]
+    public function postAction(Environment $twig, Request $request, EntityManagerInterface $entityManager)
+    {
+        $food = new Food();
+        $form = $this->createForm(FoodFormType::class, $food);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($food);
+            $entityManager->flush();
+
+            return new Response('Food ' . $food->getName() . ' successfully added!');
+        }
+
+        return new Response($twig->render('food/form.html.twig', [
+            'food_form' => $form->createView()
+        ]));
     }
 }

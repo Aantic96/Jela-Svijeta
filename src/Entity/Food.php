@@ -37,7 +37,8 @@ class Food
     #[Groups('tag')]
     private Collection $tags;
 
-    #[ORM\ManyToMany(targetEntity: Ingredient::class, inversedBy: 'food')]
+    #[ORM\ManyToMany(targetEntity: Ingredient::class, inversedBy: 'food', orphanRemoval: true)]
+    #[ORM\JoinTable(name: 'food_ingredient')]
     #[Groups('ingredient')]
     private Collection $ingredients;
 

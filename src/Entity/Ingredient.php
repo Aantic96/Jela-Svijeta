@@ -29,7 +29,7 @@ class Ingredient
     #[Groups('ingredient')]
     private ?\DateTimeImmutable $createdAt;
 
-    #[ORM\ManyToMany(targetEntity: Food::class, mappedBy: 'ingredients')]
+    #[ORM\ManyToMany(targetEntity: Food::class, mappedBy: 'ingredients', cascade: ['all'], orphanRemoval: true)]
     private Collection $food;
 
     public function __construct()

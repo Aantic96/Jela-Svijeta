@@ -43,7 +43,7 @@ class BaseController extends AbstractController
                 $this->translateData($value);
             }
         }
-        return $data;
+        return ($data);
     }
 
 }
